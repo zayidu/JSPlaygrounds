@@ -36,7 +36,7 @@ class Viewer extends Component {
       const lineString = _.padStart(line.toString(), lineNumberLength, '\u00A0');
       if(expression){
         return(
-          <div className="result__line">
+          <div key={line} className="result__line">
             <div className="result___line-number">{lineString}</div>
             <div className="result___expression">{expression}</div>
           </div>

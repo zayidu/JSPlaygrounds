@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { local } from 'store2';
 
+import 'style/style';
 import App from './components/app';
 import reducers from './reducers';
 import Globals from './globals';
@@ -18,4 +19,5 @@ ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers, initialState)}>
     <App />
   </Provider>
-  , document.querySelector('.render'));
+  , document.getElementById('app')
+);

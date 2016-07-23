@@ -1,21 +1,3 @@
-body {
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
-
-.errors {
-  white-space: pre;
-  color: red;
-}
-
-.ReactCodeMirror {
-  border: 1px solid #ccc;
-}
-/* BASICS */
-
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
@@ -352,6 +334,7 @@ div.CodeMirror-dragcursors {
 
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext { background: none; }
+<<<<<<< 35f50b8d375864b8ee9db82060f77caaa161ef56:style/style.css
 
 
 /* resizer */

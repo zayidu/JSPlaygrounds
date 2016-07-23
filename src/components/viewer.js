@@ -8,6 +8,40 @@ import parseExpressions from 'selectors/parse_expressions';
 
 const storedSizeErrosPane = local.get('size_errors_pane');
 
+const coma = (arr, i) => i < arr.length -1 ? ', ' :'';
+
+const formatResult = (value) => {
+
+  // perhaps an option later
+  // if (value === undefined)
+  //   return <span className="cm-atom">undefined</span>;
+
+  if (value === null)
+    return <span className="cm-atom">null</span>;
+
+  if (_.isBoolean(value))
+    return <span className="cm-atom">{value ? 'true' : 'false'}</span>;
+
+  if (_.isNumber(value))
+    return <span className="cm-number">{value}</span>
+
+  if (_.isString(value))
+    return <span className="cm-string">"{value}"</span>
+
+  if (_.isFunction(value))
+    return <em><span className="cm-keyword">function</span> <span className="cm-def">{value.name || 'anonymous'}</span></em>;
+
+  if (_.isArray(value))
+    return <span>[{value.map((v, i, arr) => <span key={i}>{formatResult(v)}{coma(arr, i)}</span>)}]</span>;
+
+  if (_.isObject(value))
+    return <span>{'{'}{_.map(value, (v, k) => ({k, v})).map(({k, v}, i, arr) =>(
+      <span key={k}><span className="cm-property">{k}</span>: {formatResult(v)}{coma(arr, i)}</span>
+    ))} {'}'}</span>;
+
+  return value;
+}
+
 class Viewer extends Component {
   evaluateExpressions(expressions) {
     const formattedExpressions = _.mapValues(expressions, expression => {
@@ -15,15 +49,9 @@ class Viewer extends Component {
 
       if (result && result.type) {
         return result;
-      } else if (_.isFunction(result) && result.name) {
-        return <i>Function {result.name}</i>;
-      } else if (_.isBoolean(result)) {
-        return result ? 'True' : 'False';
-      } else if (_.isObject(result) || _.isArray(result)) {
-        return JSON.stringify(result);
       }
 
-      return result;
+      return formatResult(result);
     });
 
     return _.map(formattedExpressions, (expression, line) => {

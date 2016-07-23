@@ -12,6 +12,11 @@
   }
 }
 
+.result > * > *{
+  padding-bottom: 10px;
+  display: block;
+}
+
 .result__lines{
   flex: 1;
 }

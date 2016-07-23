@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import SplitPane from 'react-split-pane';
 import { local } from 'store2';
+
+import { themesType } from 'themes';
+
 import Editor from './editor';
 import Viewer from './viewer';
+import Header from './Header';
 
 const storedSizeViewerPane = local.get('size_viewer_pane');
 
-export default class App extends Component {
-  render() {
 
-    const defaultSize = storedSizeViewerPane || window.innerWidth * 0.3;
+const App = ({ theme }) => {
+  const width = window.innerHeight;
+  const defaultSize = storedSizeViewerPane || window.innerWidth * 0.3;
 
-    return (
+  return (
+    <div className={`CodeMirror cm-s-${theme} theme-${themesType[theme]} App`}>
+      <Header />
       <SplitPane
          split="vertical"
          defaultSize={defaultSize}
@@ -21,6 +28,10 @@ export default class App extends Component {
         <Editor />
         <Viewer />
       </SplitPane>
-    );
-  }
+    </div>
+  );
 }
+
+const mapStateToProps = ({ theme }) => ({ theme });
+
+export default connect(mapStateToProps)(App);

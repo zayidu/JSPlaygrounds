@@ -1,5 +1,19 @@
-.Header{
-  background-color: rgba(150, 150, 150, .2);
-  border-bottom: 1px solid rgba(150, 150, 150, .2);
+.Header.CodeMirror-gutters{
+  // reste CodeMirror-gutters styles
+  position: static;
+  min-height: 0;
+
   padding: 10px 30px;
+}
+
+.theme-light{
+  .Header.CodeMirror-gutters{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  }
+}
+
+.theme-dark{
+  .Header.CodeMirror-gutters{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
 }

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { local } from 'store2';
 
 const handleCodeChange = (onCodeChange) => (code) => {
-  updateCode(code);
+  onCodeChange(code);
   // save code in localStorage
   local.set('code', code);
 };

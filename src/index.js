@@ -12,7 +12,8 @@ import Globals from './globals';
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 
 const initialState = {
-  code: local.get('code')
+  code: local.get('code'),
+  theme: local.get('theme') || 'default'
 }
 
 ReactDOM.render(

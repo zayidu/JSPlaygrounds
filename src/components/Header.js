@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { changeTheme } from 'actions';
 import { themes } from 'themes';
+import { local } from 'store2';
 
 const Header = ({ theme, onChangeTheme}) => {
   const themesOptions = themes.map((t) => <option key={t} value={t}>{t}</option>)
@@ -18,7 +19,11 @@ Header.displayName = 'Header';
 
 const mapStateToProps = ({ theme }) => ({ theme });
 const mapDispatchToProps = (dispatch) => ({
-  onChangeTheme: (e) => dispatch(changeTheme(e.target.value))
+  onChangeTheme: (e) => {
+    const theme = e.target.value;
+    dispatch(changeTheme(theme));
+    local.set('theme', theme);
+  }
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(Header);

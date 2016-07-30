@@ -7,7 +7,7 @@ const Header = ({ theme, onChangeTheme}) => {
   const themesOptions = themes.map((t) => <option key={t} value={t}>{t}</option>)
   const stylesheet = theme === 'default' ? null : <link rel="stylesheet" type="text/css" href={`themes/${theme}.css`} />;
   return (
-    <header className="Header">
+    <header className="CodeMirror-gutters Header">
       {stylesheet}
       <select value={theme} onChange={onChangeTheme}>{themesOptions}</select>
     </header>

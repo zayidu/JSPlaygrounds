@@ -26,18 +26,11 @@ class Viewer extends Component {
       return result;
     });
 
-    const lineNumberLength = _.reduce(
-      _.keys(formattedExpressions),
-      (len, line) => line.length > len ? line.length : len,
-      0
-    );
-
     return _.map(formattedExpressions, (expression, line) => {
-      const lineString = _.padStart(line.toString(), lineNumberLength, '\u00A0');
       if(expression){
         return(
           <div key={line} className="result__line">
-            <div className="result___line-number">{lineString}</div>
+            <div className="CodeMirror-linenumber CodeMirror-gutter-elt result___line-number">{line}</div>
             <div className="result___expression">{expression}</div>
           </div>
         );
@@ -46,12 +39,25 @@ class Viewer extends Component {
     });
   }
 
+  getGutterStyle() {
+    const lineNumberLength = _.reduce(
+      _.keys(this.props.expressions),
+      (len, line) => line.length > len ? line.length : len,
+      0
+    );
+
+    return {
+      width: lineNumberLength * 8 + 10
+    }
+  }
+
   renderExpressions(code) {
     return this.evaluateExpressions(this.props.expressions);
   }
 
   render() {
     const defaultHeight = storedSizeErrosPane || window.innerHeight * 0.25;
+
 
     return (
       <SplitPane
@@ -62,7 +68,10 @@ class Viewer extends Component {
         onChange={local.set.bind(local, 'size_errors_pane')}
       >
         <div className="result">
-          {this.renderExpressions(this.props.code)}
+          <div className="CodeMirror-gutters" style={this.getGutterStyle()}/>
+          <div className="result__lines">
+            {this.renderExpressions(this.props.code)}
+          </div>
         </div>
         <div className="errors">
           {this.props.errors}

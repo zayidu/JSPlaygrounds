@@ -1,0 +1,30 @@
+/* result */
+.result{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+
+  .CodeMirror-gutters{
+    position: static;
+    min-width: 30px;
+  }
+}
+
+.result__lines{
+  flex: 1;
+}
+
+.result__line{
+  position: relative;
+}
+
+.result___line-number{
+  text-align: right;
+  right: 100%;
+}
+
+.result___expression{
+  padding: 0 4px;
+}

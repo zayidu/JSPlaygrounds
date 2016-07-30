@@ -1,6 +1,6 @@
 # JSPlaygrounds
 
-[Show me the demo!](https://stephengrider.github.io/JSPlaygrounds/)
+[Show me the demo!](https://emaj-fr.github.io/JSPlaygrounds/)
 
 ### Running Locally
 

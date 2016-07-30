@@ -410,6 +410,7 @@ border-color: transparent;
 .result{
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .result__line{

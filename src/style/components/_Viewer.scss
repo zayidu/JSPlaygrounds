@@ -11,11 +11,13 @@
     min-width: 30px;
   }
 
-  &.result--simple{
-    font-family: $font-familly-sans;
-  }
 
   .result__react{
+    font-family: $font-familly-sans;
+  }
+}
+.result--simple{
+  .result__expression{
     font-family: $font-familly-sans;
   }
 }
@@ -38,6 +40,7 @@
   text-align: right;
   right: 100%;
   border: 1px solid transparent;
+  cursor: pointer;
 }
 
 .result__line-number--current{

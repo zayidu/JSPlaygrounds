@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
+import compose from 'lodash/fp/compose';
 
+import { updateCursorPosition } from 'actions';
 
 const coma = (arr, i) => i < arr.length -1 ? ', ' :'';
 
@@ -60,16 +62,17 @@ const simpleResult = (result) => {
 }
 
 
-const ResultExpression = ({ expression, line,  formatedResult, cursorPosition }) => {
+const ResultExpression = ({ expression, line,  formatedResult, cursorPosition, onChangeCursorPosition }) => {
   const result = formatedResult ? formatResult(expression) : simpleResult(expression);
-  const lineClassName = classnames(
-    'CodeMirror-linenumber CodeMirror-gutter-elt result__line-number',
-    {'result__line-number--current': `${line}` === `${cursorPosition.line + 1}`}
-  );
   if(result){
+      const lineNumberClassName = classnames(
+        'CodeMirror-linenumber CodeMirror-gutter-elt result__line-number',
+        {'result__line-number--current': `${line}` === `${cursorPosition.line + 1}`}
+      );
+      const onClickLineNumber = () => onChangeCursorPosition({ line: line - 1, ch: 0 });
       return(
         <div className="result__line">
-          <div className={lineClassName}>{line}</div>
+          <div className={lineNumberClassName} onClick={onClickLineNumber}>{line}</div>
           <div className="result__expression">{result}</div>
         </div>
       );
@@ -79,5 +82,8 @@ const ResultExpression = ({ expression, line,  formatedResult, cursorPosition })
 
 
 const mapStateToProps = ({ formatedResult, cursorPosition }) => ({ formatedResult, cursorPosition });
+const mapDispatchToProps = (dispatch) => ({
+  onChangeCursorPosition: compose(dispatch, updateCursorPosition)
+});
 
-export default connect(mapStateToProps)(ResultExpression);
+export default connect(mapStateToProps, mapDispatchToProps)(ResultExpression);

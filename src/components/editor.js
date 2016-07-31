@@ -7,8 +7,23 @@ import { connect } from 'react-redux';
 
 const Editor = React.createClass({
   componentDidMount(){
-    const codemirror = this.refs.codemirror.getCodeMirror();
-    codemirror.on('cursorActivity', this.handleCursorActivity);
+    this.codemirror = this.refs.codemirror.getCodeMirror();
+    this.codemirror.on('cursorActivity', this.handleCursorActivity);
+  },
+
+  componentWillReceiveProps({ cursorPosition }) {
+    if (this.codemirror) {
+      this.updateCursorPosition(cursorPosition);
+    }
+  },
+
+  updateCursorPosition({ line, ch}) {
+    const { doc } = this.codemirror;
+    const current = doc.getCursor();
+    if (line !== current.line || ch !== current.ch) {
+      this.refs.codemirror.focus();
+      doc.setCursor({ line, ch });
+    }
   },
 
   handleCursorActivity({ doc }){
@@ -29,8 +44,8 @@ const Editor = React.createClass({
   }
 });
 
-function mapStateToProps({ code, theme }) {
-  return { code, theme };
+function mapStateToProps({ code, theme, cursorPosition }) {
+  return { code, theme, cursorPosition };
 }
 
 const mapDispatchToProps = (dispatch) => ({

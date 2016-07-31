@@ -3,7 +3,8 @@ import { local } from 'store2';
 import {
   DID_UPDATE_CODE,
   CHANGE_THEME,
-  SET_FORMATED_RESULT
+  SET_FORMATED_RESULT,
+  UPDATE_CURSOR_POSITION
 } from 'actions/types';
 
 export function updateCode(code) {
@@ -31,3 +32,11 @@ export const setFormatedResult = (formatedResult) => {
     payload: formatedResult
   };
 };
+
+export const updateCursorPosition = (cursorPosition) => {
+  return {
+    type: UPDATE_CURSOR_POSITION,
+    payload: cursorPosition
+  };
+};
+

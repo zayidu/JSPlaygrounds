@@ -5,6 +5,8 @@ import { createStore, applyMiddleware } from 'redux';
 import { local } from 'store2';
 
 import 'style/style';
+import 'mdi/css/materialdesignicons';
+
 import App from './components/app';
 import reducers from './reducers';
 import Globals from './globals';
@@ -13,7 +15,8 @@ const createStoreWithMiddleware = applyMiddleware()(createStore);
 
 const initialState = {
   code: local.get('code'),
-  theme: local.get('theme') || 'default'
+  theme: local.get('theme') || 'default',
+  formatedResult: local.get('formatedResult') || false
 }
 
 ReactDOM.render(

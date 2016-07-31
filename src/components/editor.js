@@ -1,10 +1,9 @@
-import _ from 'lodash';
+import compose from 'lodash/fp/compose';
 import React, { Component } from 'react';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/jsx/jsx';
 import { updateCode } from 'actions';
 import { connect } from 'react-redux';
-import { local } from 'store2';
 
 const Editor = ({ code, theme, onCodeChange }) => {
   return (
@@ -22,10 +21,7 @@ function mapStateToProps({ code, theme }) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onCodeChange: (code) => {
-    dispatch(updateCode(code));
-    local.set('code', code);
-  }
+  onCodeChange: compose(dispatch, updateCode)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor);

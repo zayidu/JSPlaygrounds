@@ -1,8 +1,11 @@
-.Header.CodeMirror-gutters{
+.CodeMirror .Header.CodeMirror-gutters{
   // reste CodeMirror-gutters styles
   position: static;
   min-height: 0;
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 30px;
 }
 
@@ -16,4 +19,38 @@
   .Header.CodeMirror-gutters{
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
+}
+
+.Header__button{
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  transition: all .2s;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
+  padding: 0 10px;
+  line-height: 26px;
+  opacity: .5;
+
+  &:hover{
+    opacity: 1;
+    background: transparent;
+    border-color: rgba(0, 0, 0, 0.3);
+  }
+
+  &:active,
+  &.active{
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.Header__button--icon{
+  text-align: center;
+  padding: 0;
+  width: 26px;
+  line-height: 26px;
 }

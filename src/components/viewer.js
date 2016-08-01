@@ -1,87 +1,67 @@
-import _ from 'lodash';
+import map from 'lodash/fp/map';
+import mapValues from 'lodash/fp/mapValues';
+import filter from 'lodash/fp/filter';
+import isUndefined from 'lodash/isUndefined'
+import compose from 'lodash/fp/compose';
+import reduce from 'lodash/reduce';
+import keys from 'lodash/keys';
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SplitPane from 'react-split-pane';
 import { local } from 'store2';
+import classnames from 'classnames';
 
 import parseExpressions from 'selectors/parse_expressions';
+import ResultExpression from './ResultExpression';
 
 const storedSizeErrosPane = local.get('size_errors_pane');
 
-class Viewer extends Component {
-  evaluateExpressions(expressions) {
-    const formattedExpressions = _.mapValues(expressions, expression => {
-      const result = eval(expression);
+const mapUnCaped = map.convert({ 'cap': false });
 
-      if (result && result.type) {
-        return result;
-      } else if (_.isFunction(result) && result.name) {
-        return <i>Function {result.name}</i>;
-      } else if (_.isBoolean(result)) {
-        return result ? 'True' : 'False';
-      } else if (_.isObject(result) || _.isArray(result)) {
-        return JSON.stringify(result);
-      }
+const renderExpressions = compose(
+  mapUnCaped((expression, line) => <ResultExpression key={line} expression={expression} line={line} />),
+  mapValues(eval)
+)
 
-      return result;
-    });
+const getGutterStyle = (expressions) => {
+  const lineNumberLength = reduce(
+    keys(expressions),
+    (len, line) => line.length > len ? line.length : len,
+    0
+  );
 
-    return _.map(formattedExpressions, (expression, line) => {
-      if(expression){
-        return(
-          <div key={line} className="result__line">
-            <div className="CodeMirror-linenumber CodeMirror-gutter-elt result___line-number">{line}</div>
-            <div className="result___expression">{expression}</div>
-          </div>
-        );
-      }
-      return ;
-    });
+  return {
+    width: lineNumberLength * 8 + 10
   }
+};
 
-  getGutterStyle() {
-    const lineNumberLength = _.reduce(
-      _.keys(this.props.expressions),
-      (len, line) => line.length > len ? line.length : len,
-      0
-    );
-
-    return {
-      width: lineNumberLength * 8 + 10
-    }
-  }
-
-  renderExpressions(code) {
-    return this.evaluateExpressions(this.props.expressions);
-  }
-
-  render() {
-    const defaultHeight = storedSizeErrosPane || window.innerHeight * 0.25;
-
-
-    return (
-      <SplitPane
-        split="horizontal"
-        defaultSize={defaultHeight}
-        className="viewer"
-        primary="second"
-        onChange={local.set.bind(local, 'size_errors_pane')}
-      >
-        <div className="result">
-          <div className="CodeMirror-gutters" style={this.getGutterStyle()}/>
-          <div className="result__lines">
-            {this.renderExpressions(this.props.code)}
-          </div>
+const Viewer = ({errors, expressions, formatedResult}) => {
+  const defaultHeight = storedSizeErrosPane || window.innerHeight * 0.25;
+  const resultClassName = classnames('result', {'result--simple': !formatedResult});
+  return (
+    <SplitPane
+      split="horizontal"
+      defaultSize={defaultHeight}
+      className="viewer"
+      primary="second"
+      onChange={local.set.bind(local, 'size_errors_pane')}
+    >
+      <div className={resultClassName}>
+        <div className="CodeMirror-gutters" style={getGutterStyle(expressions)}/>
+        <div className="result__lines">
+          {renderExpressions(expressions)}
         </div>
-        <div className="errors">
-          {this.props.errors}
-        </div>
-      </SplitPane>
-    );
-  }
-}
+      </div>
+      <div className="errors">
+        {errors}
+      </div>
+    </SplitPane>
+  );
+};
 
 function mapStateToProps(state){
+  const { formatedResult} = state;
   let expressions, errors;
 
   try {
@@ -90,7 +70,11 @@ function mapStateToProps(state){
     errors = e.toString();
   }
 
-  return { expressions, errors };
+  return {
+    expressions,
+    errors,
+    formatedResult
+  };
 }
 
 export default connect(mapStateToProps)(Viewer);

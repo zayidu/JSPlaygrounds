@@ -69,7 +69,7 @@ const ResultExpression = ({ expression, line,  formatedResult, cursorPosition, o
         'CodeMirror-linenumber CodeMirror-gutter-elt result__line-number',
         {'result__line-number--current': `${line}` === `${cursorPosition.line + 1}`}
       );
-      const onClickLineNumber = () => onChangeCursorPosition({ line: line - 1, ch: 0 });
+      const onClickLineNumber = () => onChangeCursorPosition({ line: line - 1, ch: 0, force: true });
       return(
         <div className="result__line">
           <div className={lineNumberClassName} onClick={onClickLineNumber}>{line}</div>

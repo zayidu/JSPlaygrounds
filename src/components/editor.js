@@ -12,17 +12,11 @@ const Editor = React.createClass({
   },
 
   componentWillReceiveProps({ cursorPosition }) {
-    if (this.codemirror) {
-      this.updateCursorPosition(cursorPosition);
-    }
-  },
-
-  updateCursorPosition({ line, ch}) {
     const { doc } = this.codemirror;
-    const current = doc.getCursor();
-    if (line !== current.line || ch !== current.ch) {
-      this.refs.codemirror.focus();
+    if (cursorPosition.force) {
+      const { line, ch } = cursorPosition;
       doc.setCursor({ line, ch });
+      this.refs.codemirror.focus();
     }
   },
 

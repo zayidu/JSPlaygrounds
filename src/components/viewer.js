@@ -60,13 +60,13 @@ const Viewer = ({errors, expressions, formatedResult}) => {
   );
 };
 
-function mapStateToProps(state){
-  const { formatedResult} = state;
+function mapStateToProps({ code, formatedResult }){
   let expressions, errors;
 
   try {
-    expressions = parseExpressions(state);
+    expressions = parseExpressions(code.latest);
   } catch (e) {
+    expressions = parseExpressions(code.stable);
     errors = e.toString();
   }
 

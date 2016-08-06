@@ -9,7 +9,6 @@ import {
 
 export function updateCode(code) {
   //console.clear();
-  local.set('code', code);
 
   return {
     type: DID_UPDATE_CODE,

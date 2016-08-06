@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import { transform } from 'babel-standalone';
 import esprima from 'esprima';
 
-const codeSelector = state => state.code;
+const codeSelector = code => code;
 const OPEN_DELIMITERS = [ '(', '{', '[', '`' ];
 const CLOSE_DELIMITERS = [ ')', '}', ']', '`' ];
 const DELIMITER_MAP = {

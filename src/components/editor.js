@@ -39,7 +39,7 @@ const Editor = React.createClass({
 });
 
 function mapStateToProps({ code, theme, cursorPosition }) {
-  return { code, theme, cursorPosition };
+  return { code: code.latest, theme, cursorPosition };
 }
 
 const mapDispatchToProps = (dispatch) => ({

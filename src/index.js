@@ -10,17 +10,22 @@ import 'mdi/css/materialdesignicons';
 import App from './components/app';
 import reducers from './reducers';
 import Globals from './globals';
+import saveInLocalStorage from './saveInLocalStorage';
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 
 const initialState = {
-  code: local.get('code') || {},
+  formatedResult: local.get('formatedResult') || false,
+  snippets: local.get('snippets') || [],
   theme: local.get('theme') || 'default',
-  formatedResult: local.get('formatedResult') || false
-}
+};
+
+const store = createStoreWithMiddleware(reducers, initialState);
+
+store.subscribe(saveInLocalStorage(store))
 
 ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducers, initialState)}>
+  <Provider store={store}>
     <App />
   </Provider>
   , document.getElementById('app')

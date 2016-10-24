@@ -2,8 +2,10 @@ import compose from 'lodash/fp/compose';
 import React, { Component } from 'react';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/jsx/jsx';
-import { updateCode, updateCursorPosition } from 'actions';
+import { updateCode, updateCursorPosition, saveSnippet } from 'actions';
 import { connect } from 'react-redux';
+import parseExpressions from 'selectors/parse_expressions';
+
 
 const Editor = React.createClass({
   componentDidMount(){
@@ -25,26 +27,52 @@ const Editor = React.createClass({
   },
 
   render(){
-    const { code, theme, onCodeChange } = this.props;
+    const { currentSnippet, snippets, theme, onCodeChange } = this.props;
+
     return (
       <div>
         <CodeMirror
           ref="codemirror"
-          value={code}
-          onChange={onCodeChange}
+          value={currentSnippet.latest}
+          onChange={onCodeChange(currentSnippet, snippets)}
           options={{ theme, mode: 'jsx', lineNumbers: true, tabSize: 2 }} />
       </div>
     );
   }
 });
 
-function mapStateToProps({ code, theme, cursorPosition }) {
-  return { code: code.latest, theme, cursorPosition };
-}
+const mapStateToProps = ({ snippets, currentSnippet , theme, cursorPosition }) => ({
+  theme,
+  snippets,
+  cursorPosition,
+  currentSnippet,
+});
 
-const mapDispatchToProps = (dispatch) => ({
-  onCodeChange: compose(dispatch, updateCode),
+const mapDispatchToProps = dispatch => ({
+  onCodeChange: (currentSnippet, snippets) => code => {
+    const { stable, latest } = getCodeStateFromCode(currentSnippet, code);
+    const snippet = Object.assign({}, currentSnippet, { stable, latest });
+    dispatch(updateCode(snippet));
+    const snippetIsSaved = !! snippets.find(({ id }) => id === snippet.id);
+    if (snippetIsSaved) {
+      dispatch(saveSnippet(snippet));
+    }
+  },
   onUpdateCursorPosition: compose(dispatch, updateCursorPosition)
 });
+
+const getCodeStateFromCode = (currentSnippet, code) => {
+  const latest = code;
+  let { stable } = currentSnippet;
+  try {
+    parseExpressions(latest);
+    stable = code;
+  } catch (e) {};
+
+  return {
+    latest,
+    stable
+  };
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor);

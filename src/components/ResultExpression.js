@@ -35,9 +35,9 @@ const formatResult = (result) => {
     return <span>[{result.map((v, i, arr) => <span key={i}>{formatResult(v)}{coma(arr, i)}</span>)}]</span>;
 
   if (_.isObject(result))
-    return <span>{'{'}{_.map(result, (v, k) => ({k, v})).map(({k, v}, i, arr) =>(
+    return <span>{'{ '}{_.map(result, (v, k) => ({k, v})).map(({k, v}, i, arr) =>(
       <span key={k}><span className="cm-property">{k}</span>: {formatResult(v)}{coma(arr, i)}</span>
-    ))} {'}'}</span>;
+    ))} {' }'}</span>;
 
   return result;
 };

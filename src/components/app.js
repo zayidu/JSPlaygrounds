@@ -8,11 +8,18 @@ import { themesType } from 'themes';
 import Editor from './editor';
 import Viewer from './viewer';
 import Header from './Header';
+import Sidebar from './Sidebar';
 
 const storedSizeViewerPane = local.get('size_viewer_pane');
 
+const getSidebarWrapper = (isSidebarOpen, content) => isSidebarOpen ? (
+  <SplitPane key="sidebar" split="vertical" defaultSize={200}>
+    <Sidebar />
+    {content}
+  </SplitPane>
+) : content;
 
-const App = ({ theme }) => {
+const App = ({ theme, isSidebarOpen }) => {
   const width = window.innerHeight;
   const defaultSize = storedSizeViewerPane || window.innerWidth * 0.3;
 
@@ -20,20 +27,23 @@ const App = ({ theme }) => {
     <div className={`CodeMirror cm-s-${theme} theme-${themesType[theme]} App`}>
       <Header />
       <div className="App__master">
-        <SplitPane
-           split="vertical"
-           defaultSize={defaultSize}
-           primary="second"
-           onChange={local.set.bind(local, 'size_viewer_pane')}
-        >
-          <Editor />
-          <Viewer />
-        </SplitPane>
+        {getSidebarWrapper(isSidebarOpen,
+          <SplitPane
+            key="editor"
+            split="vertical"
+            defaultSize={defaultSize}
+            primary="second"
+            onChange={local.set.bind(local, 'size_viewer_pane')}
+          >
+            <Editor />
+            <Viewer />
+          </SplitPane>
+        )}
       </div>
     </div>
   );
 }
 
-const mapStateToProps = ({ theme }) => ({ theme });
+const mapStateToProps = ({ theme, isSidebarOpen }) => ({ theme, isSidebarOpen });
 
 export default connect(mapStateToProps)(App);

@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import { transform } from 'babel-standalone';
 import esprima from 'esprima';
 
-const codeSelector = state => state.code;
+const codeSelector = code => code;
 const OPEN_DELIMITERS = [ '(', '{', '[', '`' ];
 const CLOSE_DELIMITERS = [ ')', '}', ']', '`' ];
 const DELIMITER_MAP = {
@@ -17,7 +17,10 @@ const findDelimiters = ({ column }, lineContents) =>
   _.intersection(_.takeRight(lineContents, lineContents.length - column), OPEN_DELIMITERS).length
 
 const parseExpressions = (code) => {
-  const transformedCode = transform(code, { presets: ['react']}).code;
+  const transformedCode = transform(code, {
+    presets: ['react'],
+    retainLines: true
+  }).code;
   const codeByLine = transformedCode.split('\n');
   const tokenized = esprima.tokenize(transformedCode, { loc: true });
 

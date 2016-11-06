@@ -1,0 +1,39 @@
+.Sidebar {
+  height: 100%;
+  overflow: auto;
+}
+
+.Sidebar__snippets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.Sidebar__snippet {
+  line-height: 2.6;
+  padding: 0 15px;
+  cursor: pointer;
+  transition: .2s all;
+  white-space: pre;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  .theme-light & {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    &:hover,
+    &:active,
+    &.active {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .theme-dark & {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    &:hover,
+    &:active,
+    &.active {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+}

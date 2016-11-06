@@ -1,0 +1,52 @@
+/* result */
+.result{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+
+  .CodeMirror-gutters{
+    position: static;
+    min-width: 30px;
+  }
+
+
+  .result__react{
+    font-family: $font-familly-sans;
+  }
+}
+.result--simple{
+  .result__expression{
+    font-family: $font-familly-sans;
+  }
+}
+
+.result > * > *{
+  padding-bottom: 10px;
+  display: block;
+}
+
+.result__lines{
+  flex: 1;
+}
+
+.result__line{
+  position: relative;
+}
+
+
+.result__line-number{
+  text-align: right;
+  right: 100%;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.result__line-number--current{
+  border-color: currentColor;
+}
+
+.result__expression{
+  padding: 0 4px;
+}

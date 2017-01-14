@@ -38,7 +38,11 @@ const getGutterStyle = (expressions) => {
 
 const Viewer = ({errors, expressions, formatedResult}) => {
   const defaultHeight = storedSizeErrosPane || window.innerHeight * 0.25;
-  const resultClassName = classnames('result', {'result--simple': !formatedResult});
+  const resultClassName = classnames('result', {
+    'result--simple': !formatedResult,
+    'result--has-errors': errors.length ,
+  });
+
   return (
     <SplitPane
       split="horizontal"
@@ -48,34 +52,32 @@ const Viewer = ({errors, expressions, formatedResult}) => {
       onChange={local.set.bind(local, 'size_errors_pane')}
     >
       <div className={resultClassName}>
+        <div
+          className="result__errors-indicator"
+          onClick={() => alert("Output is perhaps obsolete. The code has some errors.")}
+        >
+          <i className="mdi mdi-alert" />
+        </div>
         <div className="CodeMirror-gutters" style={getGutterStyle(expressions)}/>
         <div className="result__lines">
           {renderExpressions(expressions)}
         </div>
       </div>
       <div className="errors">
-        {errors}
+        {errors.map(({ line, message }) => `line ${line}: ${message} \n`)}
       </div>
     </SplitPane>
   );
 };
 
-function mapStateToProps({ currentSnippet }){
-  const { latest, stable, formatedResult } = currentSnippet;
-  let expressions, errors;
-
-  try {
-    expressions = parseExpressions(latest);
-  } catch (e) {
-    expressions = parseExpressions(stable);
-    errors = e.toString();
-  }
+const mapStateToProps = ({ formatedResult, currentSnippet }) => {
+  const { stable, errors = [] } = currentSnippet;
 
   return {
-    expressions,
+    expressions: parseExpressions(stable),
     errors,
     formatedResult
   };
-}
+};
 
 export default connect(mapStateToProps)(Viewer);

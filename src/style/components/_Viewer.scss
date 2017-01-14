@@ -22,6 +22,40 @@
   }
 }
 
+.result__errors-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 1.4;
+  width: 1.4em;
+  text-align: center;
+  z-index: 1000;
+  font-size: 18px;
+  display: none;
+
+  .theme-light & {
+    background-color: rgba(black, 0.2);
+  }
+
+  .theme-dark & {
+    background-color: rgba(white, 0.2);
+  }
+
+  .result--has-errors & {
+    display: block;
+  }
+
+  .mdi {
+    line-height: 1;
+    padding-bottom: 0;
+  }
+}
+
+.result--obsolete{
+  opacity: .5;
+  position: relative;
+}
+
 .result > * > *{
   padding-bottom: 10px;
   display: block;

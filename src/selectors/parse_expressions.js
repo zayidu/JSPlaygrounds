@@ -13,8 +13,9 @@ const DELIMITER_MAP = {
   '`': '`'
 };
 
-const findDelimiters = ({ column }, lineContents) =>
+const findDelimiters = ({ column }, lineContents) => (
   _.intersection(_.takeRight(lineContents, lineContents.length - column), OPEN_DELIMITERS).length
+);
 
 const parseExpressions = (code) => {
   const transformedCode = transform(code, {
@@ -59,7 +60,7 @@ const parseExpressions = (code) => {
     return expressions;
   }, {});
 
-  eval(transformedCode);
+  //eval(transformedCode);
   return exp;
 }
 

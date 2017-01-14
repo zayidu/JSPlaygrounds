@@ -1,11 +1,12 @@
 import compose from 'lodash/fp/compose';
+import forEach from 'lodash/forEach';
 import React, { Component } from 'react';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/mode/jsx/jsx';
-import { updateCode, updateCursorPosition, saveSnippet } from 'actions';
 import { connect } from 'react-redux';
-import parseExpressions from 'selectors/parse_expressions';
 
+import { updateCode, updateCursorPosition, saveSnippet } from 'actions';
+import parseExpressions from 'selectors/parse_expressions';
 
 const Editor = React.createClass({
   componentDidMount(){
@@ -50,8 +51,7 @@ const mapStateToProps = ({ snippets, currentSnippet , theme, cursorPosition }) =
 
 const mapDispatchToProps = dispatch => ({
   onCodeChange: (currentSnippet, snippets) => code => {
-    const { stable, latest } = getCodeStateFromCode(currentSnippet, code);
-    const snippet = Object.assign({}, currentSnippet, { stable, latest });
+    const snippet = Object.assign({}, currentSnippet, getCodeStateFromCode(currentSnippet, code));
     dispatch(updateCode(snippet));
     const snippetIsSaved = !! snippets.find(({ id }) => id === snippet.id);
     if (snippetIsSaved) {
@@ -63,15 +63,29 @@ const mapDispatchToProps = dispatch => ({
 
 const getCodeStateFromCode = (currentSnippet, code) => {
   const latest = code;
+  let errors = [];
   let { stable } = currentSnippet;
   try {
-    parseExpressions(latest);
+    const expressions = parseExpressions(code);
+    forEach(expressions, (exp, line) => {
+      try {
+        eval(exp);
+      } catch (err) {
+        errors.push({
+          line,
+          message: err.toString(),
+        });
+      }
+    });
+
+    if(errors.length) throw new Error('Code has some errors', errors);
     stable = code;
   } catch (e) {};
 
   return {
     latest,
-    stable
+    stable,
+    errors
   };
 }
 

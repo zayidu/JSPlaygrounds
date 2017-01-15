@@ -63,7 +63,8 @@ const simpleResult = (result) => {
 
 
 const ResultExpression = ({ expression, line,  formatedResult, cursorPosition, onChangeCursorPosition }) => {
-  const result = formatedResult ? formatResult(expression) : simpleResult(expression);
+  const expressionEvaluated = eval(expression);
+  const result = formatedResult ? formatResult(expressionEvaluated) : simpleResult(expressionEvaluated);
   if(result){
       const lineNumberClassName = classnames(
         'CodeMirror-linenumber CodeMirror-gutter-elt result__line-number',

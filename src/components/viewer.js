@@ -20,16 +20,13 @@ const storedSizeErrosPane = local.get('size_errors_pane');
 const mapUnCaped = map.convert({ 'cap': false });
 
 const renderExpressions = compose(
-  mapUnCaped((expression, line) => <ResultExpression key={line} expression={expression} line={line} />),
-  mapValues(eval)
-)
+  mapUnCaped(({ line, expression }) => <ResultExpression key={line} expression={expression} line={line} />),
+);
 
 const getGutterStyle = (expressions) => {
-  const lineNumberLength = reduce(
-    keys(expressions),
-    (len, line) => line.length > len ? line.length : len,
-    0
-  );
+  const lineNumberLength = expressions
+    .map(({ line }) => line )
+    .reduce((len, line) => line.length > len ? line.length : len, 0);
 
   return {
     width: lineNumberLength * 8 + 10

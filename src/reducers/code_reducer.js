@@ -4,7 +4,7 @@ import {
   FORK,
   RESET,
 } from 'actions/types';
-import parseExpressions from 'selectors/parse_expressions';
+import parseExpressions from 'libs/parseExpressions';
 import { local } from 'store2';
 
 const INITIAL_STATE = {};

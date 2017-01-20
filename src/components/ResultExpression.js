@@ -2,6 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import compose from 'lodash/fp/compose';
+import isBoolean from 'lodash/isBoolean';
+import isNumber from 'lodash/isNumber';
+import isString from 'lodash/isString';
+import isFunction from 'lodash/isFunction';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 
 import { updateCursorPosition } from 'actions';
 
@@ -9,9 +15,8 @@ const coma = (arr, i) => i < arr.length -1 ? ', ' :'';
 
 const formatResult = (result) => {
 
-  // perhaps an option later
-  // if (result === undefined)
-  //   return <span className="cm-atom">undefined</span>;
+  if (result === undefined)
+    return <span className="cm-atom">undefined</span>;
 
   if (result && result.type)
     return <div className="result__react">{result}</div>;
@@ -19,22 +24,26 @@ const formatResult = (result) => {
   if (result === null)
     return <span className="cm-atom">null</span>;
 
-  if (_.isBoolean(result))
+  if (result === null)
+    return <span className="cm-atom">null</span>;
+
+  if (isBoolean(result))
     return <span className="cm-atom">{result ? 'true' : 'false'}</span>;
 
-  if (_.isNumber(result))
-    return <span className="cm-number">{result}</span>
+  if (isNumber(result)) {
+    return <span className="cm-number">{isNaN(result) ? 'NaN' : result}</span>
+  }
 
-  if (_.isString(result))
+  if (isString(result))
     return <span className="cm-string">"{result}"</span>
 
-  if (_.isFunction(result))
+  if (isFunction(result))
     return <em><span className="cm-keyword">function</span> <span className="cm-def">{result.name || 'anonymous'}</span></em>;
 
-  if (_.isArray(result))
+  if (isArray(result))
     return <span>[{result.map((v, i, arr) => <span key={i}>{formatResult(v)}{coma(arr, i)}</span>)}]</span>;
 
-  if (_.isObject(result))
+  if (isObject(result))
     return <span>{'{ '}{_.map(result, (v, k) => ({k, v})).map(({k, v}, i, arr) =>(
       <span key={k}><span className="cm-property">{k}</span>: {formatResult(v)}{coma(arr, i)}</span>
     ))} {' }'}</span>;
@@ -46,16 +55,16 @@ const simpleResult = (result) => {
   if (result && result.type)
     return <div className="result__react">{result}</div>;
 
-  if (_.isFunction(result) && result.name)
+  if (isFunction(result) && result.name)
     return <i>Function {result.name}</i>;
 
   if (result === null)
     return 'Null';
 
-  if (_.isBoolean(result))
+  if (isBoolean(result))
     return result ? 'True' : 'False';
 
-  if (_.isObject(result) || _.isArray(result))
+  if (isObject(result) || isArray(result))
     return JSON.stringify(result);
 
   return result;

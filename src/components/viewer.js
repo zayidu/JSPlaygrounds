@@ -1,27 +1,13 @@
-import map from 'lodash/fp/map';
-import mapValues from 'lodash/fp/mapValues';
-import filter from 'lodash/fp/filter';
-import isUndefined from 'lodash/isUndefined'
-import compose from 'lodash/fp/compose';
-import reduce from 'lodash/reduce';
-import keys from 'lodash/keys';
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SplitPane from 'react-split-pane';
 import { local } from 'store2';
 import classnames from 'classnames';
 
-import parseExpressions from 'selectors/parse_expressions';
+import parseExpressions from 'libs/parseExpressions';
 import ResultExpression from './ResultExpression';
 
 const storedSizeErrosPane = local.get('size_errors_pane');
-
-const mapUnCaped = map.convert({ 'cap': false });
-
-const renderExpressions = compose(
-  mapUnCaped(({ line, expression }) => <ResultExpression key={line} expression={expression} line={line} />),
-);
 
 const getGutterStyle = (expressions) => {
   const lineNumberLength = expressions
@@ -33,11 +19,11 @@ const getGutterStyle = (expressions) => {
   }
 };
 
-const Viewer = ({errors, expressions, formatedResult}) => {
+const Viewer = ({error, expressions, formatedResult}) => {
   const defaultHeight = storedSizeErrosPane || window.innerHeight * 0.25;
   const resultClassName = classnames('result', {
     'result--simple': !formatedResult,
-    'result--has-errors': errors.length ,
+    'result--has-errors': !!error ,
   });
 
   return (
@@ -57,22 +43,24 @@ const Viewer = ({errors, expressions, formatedResult}) => {
         </div>
         <div className="CodeMirror-gutters" style={getGutterStyle(expressions)}/>
         <div className="result__lines">
-          {renderExpressions(expressions)}
+          {expressions.map(({ line, expression }) => (
+            <ResultExpression key={line} expression={expression} line={line} />
+          ))}
         </div>
       </div>
       <div className="errors">
-        {errors.map(({ line, message }) => `line ${line}: ${message} \n`)}
+        {error ? error.message : null}
       </div>
     </SplitPane>
   );
 };
 
 const mapStateToProps = ({ formatedResult, currentSnippet }) => {
-  const { stable, errors = [] } = currentSnippet;
+  const { stable, error } = currentSnippet;
 
   return {
     expressions: parseExpressions(stable),
-    errors,
+    error,
     formatedResult
   };
 };

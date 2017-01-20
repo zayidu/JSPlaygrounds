@@ -84,3 +84,8 @@
 .result__expression{
   padding: 0 4px;
 }
+
+.errors {
+  white-space: pre;
+  color: $color__danger;
+}

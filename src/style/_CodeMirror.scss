@@ -334,3 +334,16 @@ div.CodeMirror-dragcursors {
 
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext { background: none; }
+
+.gutter-errors {
+  width: 15px;
+}
+
+.gutter-errors__marker {
+  display: inline-block;
+  margin-left: 5px;
+  border-radius: 5px;
+  width: 10px;
+  height: 10px;
+  background-color: $color__danger;
+}

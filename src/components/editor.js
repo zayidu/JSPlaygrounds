@@ -1,12 +1,16 @@
 import compose from 'lodash/fp/compose';
-import forEach from 'lodash/forEach';
 import React, { Component } from 'react';
-import CodeMirror from 'react-codemirror';
-import 'codemirror/mode/jsx/jsx';
 import { connect } from 'react-redux';
 
+import CodeMirror from 'react-codemirror';
+import 'codemirror/mode/jsx/jsx';
+import 'codemirror/keymap/sublime';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/matchtags';
+
 import { updateCode, updateCursorPosition, saveSnippet } from 'actions';
-import parseExpressions from 'selectors/parse_expressions';
+import parseExpressions from 'libs/parseExpressions';
+import getError from 'libs/getError';
 
 const Editor = React.createClass({
   componentDidMount(){
@@ -27,6 +31,20 @@ const Editor = React.createClass({
     this.props.onUpdateCursorPosition(doc.getCursor());
   },
 
+  componentDidUpdate() {
+    const { error } = this.props.currentSnippet;
+    const { doc } = this.codemirror;
+    doc.clearGutter('gutter-errors');
+
+    if (error) {
+      if (error.line) {
+        const marker = document.createElement('span');
+        marker.className="gutter-errors__marker";
+        doc.setGutterMarker(error.line -1, 'gutter-errors', marker);
+      }
+    }
+  },
+
   render(){
     const { currentSnippet, snippets, theme, onCodeChange } = this.props;
 
@@ -36,7 +54,15 @@ const Editor = React.createClass({
           ref="codemirror"
           value={currentSnippet.latest}
           onChange={onCodeChange(currentSnippet, snippets)}
-          options={{ theme, mode: 'jsx', lineNumbers: true, tabSize: 2 }} />
+          options={{
+            theme, mode: 'jsx',
+            lineNumbers: true,
+            tabSize: 2,
+            keyMap: 'sublime',
+            matchBrackets: true,
+            matchTags: true,
+            gutters: ['gutter-errors']
+          }} />
       </div>
     );
   }
@@ -62,30 +88,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const getCodeStateFromCode = (currentSnippet, code) => {
+  const error = getError(code);
   const latest = code;
-  let errors = [];
-  let { stable } = currentSnippet;
-  try {
-    const expressions = parseExpressions(code);
-    forEach(expressions, (exp, line) => {
-      try {
-        eval(exp);
-      } catch (err) {
-        errors.push({
-          line,
-          message: err.toString(),
-        });
-      }
-    });
-
-    if(errors.length) throw new Error('Code has some errors', errors);
-    stable = code;
-  } catch (e) {};
+  const { stable } = currentSnippet;
 
   return {
+    error,
     latest,
-    stable,
-    errors
+    stable: error ? stable : latest,
   };
 }
 
